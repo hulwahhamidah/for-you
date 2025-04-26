@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>I Have Something For You</title>
+    <style>
+        body {
+            margin: 0;
+            background: #fff;
+            overflow: hidden;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .slide {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: absolute;
+            top: 0; left: 0;
+        }
+        .active {
+            display: flex;
+        }
+        .btn-next {
+            margin-top: 40px;
+            padding: 12px 32px;
+            font-size: 1.2em;
+            border: none;
+            background: #e75480;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+        .btn-next:hover {
+            background: #d72660;
+        }
+        /* Curtain */
+        .curtain {
+            position: absolute;
+            width: 50vw;
+            height: 100vh;
+            top: 0;
+            background: linear-gradient(120deg, #e75480 60%, #ffb6c1 100%);
+            z-index: 2;
+            transition: transform 1.5s cubic-bezier(.77,0,.18,1);
+        }
+        .curtain.left {
+            left: 0;
+            border-top-right-radius: 80px;
+            border-bottom-right-radius: 80px;
+            transform: translateX(0);
+        }
+        .curtain.right {
+            right: 0;
+            border-top-left-radius: 80px;
+            border-bottom-left-radius: 80px;
+            transform: translateX(0);
+        }
+        .curtain.open.left {
+            transform: translateX(-100%);
+        }
+        .curtain.open.right {
+            transform: translateX(100%);
+        }
+        /* Love animation */
+        .love {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            pointer-events: none;
+            opacity: 0.8;
+            animation: floatLove 3s linear forwards;
+        }
+        @keyframes floatLove {
+            0% { transform: scale(0.7) translateY(0) rotate(-10deg);}
+            70% { opacity: 1;}
+            100% { transform: scale(1.2) translateY(-400px) rotate(20deg); opacity: 0;}
+        }
+        .love svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        /* Typing effect */
+        .typing {
+            font-size: 2.2em;
+            color: #e75480;
+            letter-spacing: 2px;
+            white-space: pre-line;
+            min-height: 2.5em;
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        /* Cake animation */
+        .cake {
+            width: 180px;
+            height: 220px;
+            position: relative;
+            margin: 0 auto;
+            animation: popIn 1s cubic-bezier(.77,0,.18,1);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.5) translateY(80px); opacity: 0;}
+            100% { transform: scale(1) translateY(0); opacity: 1;}
+        }
+    </style>
+</head>
+<body>
+    <!-- Slide 1 -->
+    <div class="slide active" id="slide1">
+        <h1 style="color:#e75480; font-size:2.5em; text-align:center;">I Have Something For You</h1>
+        <button class="btn-next" onclick="nextSlide()">Next</button>
+    </div>
+    <!-- Slide 2: Curtain and love -->
+    <div class="slide" id="slide2">
+        <div class="curtain left" id="curtainLeft"></div>
+        <div class="curtain right" id="curtainRight"></div>
+        <div id="loveContainer"></div>
+        <div class="typing" id="typing1"></div>
+        <button class="btn-next" id="btn2" style="display:none;" onclick="nextSlide()">Next</button>
+    </div>
+    <!-- Slide 3: Typing again -->
+    <div class="slide" id="slide3">
+        <div class="typing" id="typing2"></div>
+        <button class="btn-next" id="btn3" style="display:none;" onclick="nextSlide()">Next</button>
+    </div>
+    <!-- Slide 4: Typing again -->
+    <div class="slide" id="slide4">
+        <div class="typing" id="typing3"></div>
+        <button class="btn-next" id="btn4" style="display:none;" onclick="nextSlide()">Next</button>
+    </div>
+    <!-- Slide 5: Cake -->
+    <div class="slide" id="slide5">
+        <div class="cake">
+            <!-- Simple SVG cake -->
+            <svg viewBox="0 0 180 220">
+                <ellipse cx="90" cy="200" rx="70" ry="20" fill="#e75480" opacity="0.2"/>
+                <rect x="30" y="100" width="120" height="80" rx="30" fill="#fff0f5" stroke="#e75480" stroke-width="3"/>
+                <ellipse cx="90" cy="100" rx="60" ry="25" fill="#fff0f5" stroke="#e75480" stroke-width="3"/>
+                <rect x="60" y="60" width="60" height="40" rx="20" fill="#ffe4e1" stroke="#e75480" stroke-width="2"/>
+                <ellipse cx="90" cy="60" rx="30" ry="12" fill="#ffe4e1" stroke="#e75480" stroke-width="2"/>
+                <!-- Candle -->
+                <rect x="85" y="40" width="10" height="20" rx="5" fill="#ffd700"/>
+                <ellipse cx="90" cy="40" rx="7" ry="7" fill="#ffb6c1"/>
+                <ellipse cx="90" cy="34" rx="4" ry="7" fill="#ffd700" opacity="0.8"/>
+            </svg>
+        </div>
+        <div class="typing" style="color:#e75480; font-size:1.5em; margin-top:20px;">🎂 Happy Birthday! 🎂</div>
+    </div>
+    <script>
+        let current = 1;
+        function nextSlide() {
+            document.getElementById('slide'+current).classList.remove('active');
+            current++;
+            document.getElementById('slide'+current).classList.add('active');
+            if(current === 2) openCurtain();
+            if(current === 3) typingEffect("Senang mengenalmu, ada banyak doa untukmu hanya allah dan aku yang tau hihi. Semoga kita bisa menjadi teman baik ya.", "typing2", "btn3");
+            if(current === 4) typingEffect("Last one sorry im late, cuz' making this coding is quite difficult.", "typing3", "btn4");
+        }
+
+        // Curtain and love animation
+        function openCurtain() {
+            setTimeout(()=>{
+                document.getElementById('curtainLeft').classList.add('open');
+                document.getElementById('curtainRight').classList.add('open');
+                setTimeout(()=>{
+                    spawnLoves();
+                    typingEffect("HAPPY BIRTHDAY ANINDYA", "typing1", "btn2", 90);
+                }, 1500);
+            }, 500);
+        }
+
+        // Love animation
+        function spawnLoves() {
+            const loveColors = ['#e75480','#ffb6c1','#ff69b4','#ff1493','#db7093'];
+            const loveContainer = document.getElementById('loveContainer');
+            for(let i=0;i<30;i++) {
+                setTimeout(()=>{
+                    let love = document.createElement('div');
+                    love.className = 'love';
+                    love.style.left = (10 + Math.random()*80) + 'vw';
+                    love.style.top = (60 + Math.random()*20) + 'vh';
+                    let color = loveColors[Math.floor(Math.random()*loveColors.length)];
+                    love.innerHTML = `<svg viewBox="0 0 32 32"><path d="M16 29s-13-8.35-13-16.5S8.5 2 16 9.5 29 2 29 12.5 16 29 16 29z" fill="${color}"/></svg>`;
+                    loveContainer.appendChild(love);
+                    setTimeout(()=>love.remove(), 3000);
+                }, i*120);
+            }
+        }
+
+        // Typing effect
+        function typingEffect(text, elId, btnId, speed=55) {
+            let el = document.getElementById(elId);
+            el.textContent = '';
+            let i = 0;
+            function type() {
+                if(i < text.length) {
+                    el.textContent += text[i];
+                    i++;
+                    setTimeout(type, text[i-1]===' '?speed/2:speed);
+                } else {
+                    if(btnId) document.getElementById(btnId).style.display = 'inline-block';
+                }
+            }
+            type();
+        }
+
+        // Start typing on first curtain slide
+        // (handled in openCurtain)
+
+        // Optional: Enter key to next
+        document.addEventListener('keydown', function(e){
+            if(e.key === 'Enter') {
+                let btn = document.querySelector('.slide.active .btn-next');
+                if(btn && btn.style.display !== 'none') btn.click();
+            }
+        });
+    </script>
+</body>
+</html>
